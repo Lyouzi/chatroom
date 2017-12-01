@@ -7,6 +7,9 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import model.User;
+
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import java.awt.Panel;
@@ -19,7 +22,7 @@ public class MainFrame extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -30,12 +33,13 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
-	}
+	}*/
 
 	/**
 	 * Create the frame.
+	 * @param u 
 	 */
-	public MainFrame() {
+	public MainFrame(User user) {
 		setIconImage(Toolkit.getDefaultToolkit().createImage(("resource//image//logo.jpg")));
 		setTitle("主菜单");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
