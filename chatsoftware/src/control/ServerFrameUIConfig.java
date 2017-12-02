@@ -6,7 +6,7 @@ public interface ServerFrameUIConfig {
 	public int serverFrameHeight=600;
 	public String serverFrameTitle="Server";
 	public String logoPath="resources/images/logo.jpg";
-	public String serverIP="171.80.83.157";
-	public int serverPort=8888;
+	public String serverIP="192.168.43.40";
+	public int serverPort=666;
 	
 }

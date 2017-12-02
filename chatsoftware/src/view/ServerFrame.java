@@ -77,8 +77,8 @@ public class ServerFrame extends JFrame {
 		button.setBounds(93, 292, 116, 23);
 		contentPane.add(button);
 		
-		 button_1 = new JButton("停止服务器");
-		//button_1.setEnabled(false);
+		button_1 = new JButton("停止服务器");
+		button_1.setEnabled(false);
 		button_1.addActionListener(listener);
 		button_1.setBounds(340, 292, 116, 23);
 		contentPane.add(button_1);

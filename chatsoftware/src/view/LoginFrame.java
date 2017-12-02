@@ -8,6 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 
+import view.RegisterFrame;
+
 import control.ServerFrameUIConfig;
 import model.MessageBox;
 import model.User;
@@ -38,7 +40,6 @@ public class LoginFrame extends JFrame {
 	private ObjectInputStream  in;
 	private JPasswordField passwordField;
 	private JPanel contentPane;
-	private JTextPane textPane_1;
 	private JComboBox comboBox;
 	private JButton button;
 	private JButton button_1;
@@ -156,6 +157,29 @@ public class LoginFrame extends JFrame {
 		contentPane.add(button);
 		
 		button_1 = new JButton("注册");
+        button_1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if(client==null)
+					{
+						client=new Socket(ServerFrameUIConfig.serverIP, ServerFrameUIConfig.serverPort);
+						out=new ObjectOutputStream(client.getOutputStream());
+						in=new ObjectInputStream(client.getInputStream());
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+					JOptionPane.showMessageDialog(LoginFrame.this, "无法连接服务器，请检查网络!","温馨提示",JOptionPane.ERROR_MESSAGE);
+					return ;
+				}
+				
+				RegisterFrame  r=new RegisterFrame(out,in,LoginFrame.this);
+				r.setVisible(true);
+				LoginFrame.this.setVisible(false);
+				
+			}
+		});
 		button_1.setBounds(235, 216, 93, 23);
 		contentPane.add(button_1);
 		
@@ -173,11 +197,13 @@ public class LoginFrame extends JFrame {
 		lblNewLabel.setBounds(0, 0, 413, 261);
 		contentPane.add(lblNewLabel);
 		
-		textPane_1 = new JTextPane();
-		textPane_1.setBounds(104, 179, 224, 23);
-		contentPane.add(textPane_1);
 		
-		comboBox = new JComboBox();
+		passwordField = new JPasswordField("222");
+		passwordField.setBounds(104, 179, 224, 23);
+		contentPane.add(passwordField);
+		
+		comboBox = new JComboBox(new Object[]{"111","222","333"});
+		comboBox.setEditable(true);
 		comboBox.setBounds(104, 136, 224, 25);
 		contentPane.add(comboBox);
 	}
