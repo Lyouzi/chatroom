@@ -8,6 +8,10 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +24,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+
+import view.MainFrame.MessageReciverThread;
+
+import model.MessageBox;
 
 import view.ChatFrame;
 
@@ -35,6 +43,11 @@ import javax.swing.SwingConstants;
 
 public class MainFrame extends JFrame {
 
+	//定义一个集合存储所有和我聊过天的好友信息
+	private Map<String,ChatFrame>  allFrames=new HashMap<>();
+	
+	private ObjectInputStream  in;
+	private ObjectOutputStream  out;
 	private JPanel contentPane;
 	private JLabel label;
 	private JLabel lblUsername;
@@ -51,8 +64,12 @@ public class MainFrame extends JFrame {
 	 * Create the frame.
 	 * @param u 
 	 */
-	public MainFrame(User user) {
+	public MainFrame(User user,ObjectInputStream  in,ObjectOutputStream  out) {
+		
+		this.in=in;
+		this.out=out;
 		this.user=user;
+		
 		setIconImage(Toolkit.getDefaultToolkit().createImage(("resource//image//logo.jpg")));
 		setResizable(false);
 		setTitle("主菜单");
@@ -94,6 +111,9 @@ public class MainFrame extends JFrame {
 		
 		DefaultMutableTreeNode  root=new DefaultMutableTreeNode("root");//定义一个jtree根节点，所有的好友分组和好友都在这个根节点上往上放
 		
+		/**
+		 * 解析用户里面的所有好友和分组信息，并生成到jtree上对吧
+		 */
 		Map<String, HashSet<User>>  allFriends=user.getFriends();
 		 
 		Set<String>  allGroupNames=allFriends.keySet();//获取所有的分组名
@@ -135,5 +155,58 @@ public class MainFrame extends JFrame {
 		
 		panel_2 = new Panel();
 		tabbedPane.addTab("最近联系人", null, panel_2, null);
+		
+		//我们在主界面的构造器最后一行（构造器里面的代码是负责呈现界面的，也就数界面都显式完整了，我们可以让后台的那个线程悄悄开始工作了）
+
+				MessageReciverThread  t=new MessageReciverThread();
+				t.start();
+	
+		
 	}
+	//主界面这个类应该定义一个线程，该线程运行时创建一个线程实例，在主界面单独运行，用来时时刻刻接受"服务器"给我的消息
+	
+			class  MessageReciverThread  extends Thread{
+				@Override
+				public void run() {
+					MessageBox  recivedMessage=null;
+					try {
+						A:while((recivedMessage=(MessageBox)in.readObject())!=null) {
+								
+								for(String firendNum:allFrames.keySet())
+								{
+									if(firendNum.equals(recivedMessage.getFrom().getUsername()))
+									{
+										if(recivedMessage.getType().equals("shakeMessage"))
+										{
+											allFrames.get(firendNum).setVisible(true);
+											allFrames.get(firendNum).shakeWindow();
+											
+										}else
+										{
+											allFrames.get(firendNum).getTextArea().append(recivedMessage.getFrom().getNickname()+"  :  "+recivedMessage.getTime()+"\t\t\r\n"+recivedMessage.getContent()+"\r\n\r\n");
+											allFrames.get(firendNum).setVisible(true);
+										}
+										continue A;
+									}
+								}
+								ChatFrame  c=new ChatFrame(user,recivedMessage.getFrom() , in, out);
+								
+								if(recivedMessage.getType().equals("shakeMessage"))
+								{
+									c.setVisible(true);
+									c.shakeWindow();
+								}else
+								{
+									c.getTextArea().append(recivedMessage.getFrom().getNickname()+"  :  "+recivedMessage.getTime()+"\t\t\r\n"+recivedMessage.getContent()+"\r\n\r\n");
+									c.setVisible(true);
+								}
+								allFrames.put(recivedMessage.getFrom().getUsername(), c);
+						}
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}	
+}
 }

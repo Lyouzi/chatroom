@@ -136,7 +136,7 @@ public class LoginFrame extends JFrame {
 							}else
 							{
 								User u=result.getFrom();//登录程序到的用户资料，存储在服务器给我发过来的消息里面的From属性里面的
-								MainFrame  m=new MainFrame(u);
+								MainFrame  m=new MainFrame(u, in, out);
 								m.setVisible(true);
 								//com.sun.awt.AWTUtilities.setWindowOpacity(m, 0.9f);
 								LoginFrame.this.setVisible(false);
@@ -194,7 +194,7 @@ public class LoginFrame extends JFrame {
 		contentPane.add(label_1);
 		
 		lblNewLabel = new JLabel(new ImageIcon(Toolkit.getDefaultToolkit().createImage("resource//image//yu2.png")));
-		lblNewLabel.setBounds(0, 0, 413, 261);
+		lblNewLabel.setBounds(0, 0, 409, 129);
 		contentPane.add(lblNewLabel);
 		
 		
