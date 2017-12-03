@@ -94,14 +94,18 @@ public class ChatFrame extends JFrame {
 				//这里面是处理当用户点击发送按钮式要执行的业务代码
 				//1.先获取编辑文本框里面的输入的要发送的文本
 				String  willSendMessage=textArea_1.getText();
-				
+				System.out.println("获取到了");
 				
 				//2.先将消息封装成MessageBox发送给服务器
-				MessageBox  b=new MessageBox();
+				MessageBox  b=new MessageBox();			
 				b.setContent(willSendMessage);
 				b.setFrom(ChatFrame.this.my);
 				
-				if(ChatFrame.this.your==null)//判断是群聊窗口
+				System.out.println("发给服务器了");
+				b.setType("textMessage");
+				b.setTo(ChatFrame.this.your);
+			
+				/*if(ChatFrame.this.your==null)//判断是群聊窗口
 				{	String qunming;
 					User user=new User();
 					user.setUsername(qunMing);
@@ -111,7 +115,7 @@ public class ChatFrame extends JFrame {
 				{
 					b.setType("textMessage");
 					b.setTo(ChatFrame.this.your);
-				}
+				}*/
 				
 				//3.用从登录界面传过来的输出流写给服务器，让服务器帮我转发给我我的好友
 				try {
@@ -123,14 +127,22 @@ public class ChatFrame extends JFrame {
 				
 				//4.接受服务器给我回发的时间
 				
-//					MessageBox  time=(MessageBox)ChatFrame.this.in.readObject();
+					try {
+						MessageBox  time=(MessageBox)ChatFrame.this.in.readObject();
+					} catch (ClassNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 //					
 					//5.将即将发送的消息设置到上面的这个聊天信息框里面
 					
 					String nowTime=new Date().toLocaleString();
 					
 					textArea.append(ChatFrame.this.my.getNickname()+"  :  "+nowTime+"\t\t\r\n"+willSendMessage+"\r\n\r\n");
-				//6.将消息发送狂里面的内容清空
+				//6.将消息发送框里面的内容清空
 				textArea_1.setText("");
 				
 				
@@ -144,7 +156,7 @@ public class ChatFrame extends JFrame {
 		contentPane.add(button_1);
 		
 		button_2 = new JButton("抖动");
-        button.addActionListener(new ActionListener() {
+        button_2.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -180,7 +192,7 @@ public class ChatFrame extends JFrame {
 				int waitTime=50;
 				int lastX=ChatFrame.this.getX();
 				int lasty=ChatFrame.this.getY();
-				for(int n=0;n<100;n++)
+				for(int n=0;n<6;n++)
 				{
 					ChatFrame.this.setLocation(lastX-pianyi, lasty);
 					try {

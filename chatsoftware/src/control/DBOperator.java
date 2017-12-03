@@ -87,13 +87,14 @@ public class DBOperator {
 		
 		
 		//准备几条数据存储到数据库里面当做测试数据
-		User  user=new User("111","111","男",18,"老王","只要锄头轮的好，没有挖不到的墙角","resource/image/logo.jpg");
-		User  user1=new User("222","222","女",28,"老老王","只要锄头轮的好，有挖不到的墙角","resource/image/logo.jpg");
-		User  user2=new User("333","333","男",38,"姥姥老王","只要锄头轮的好，挖不到的墙角","resource/image/logo.jpg");
-		User  user3=new User("444","444","女",48,"老老老老王","只要锄头轮的好，的墙角","resource/image/logo.jpg");
-		User  user4=new User("123","123","男",18,"小王","只要锄头轮的好，的墙角啊","resource/image/logo.jpg");
-		User  user5=new User("234","234","男",28,"小王吧","只要锄头轮的好，的墙角玩儿","resource/image/logo.jpg");
-		User  user6=new User("345","345","女",58,"你是小王吧","只要锄头轮的好，的墙角是否放AA大","resource/image/logo.jpg");
+		User  user=new User("111","111","男",18,"滑稽","三个一","resource/image/huaji.jpg");
+		User  user1=new User("222","222","女",28,"美滋滋","三个二，","resource/image/meizizi.jpg");
+		User  user2=new User("333","333","男",13,"哭哭","三个三，","resource/image/kuku.jpg");
+		User  user3=new User("444","444","女",58,"斜眼","三个四，","resource/image/xieyan.jpg");
+		User  user4=new User("555","555","男",66,"炫酷","三个五，","resource/image/xuanku.jpg");
+		User  user5=new User("666","666","男",25,"理直气壮","三个六，","resource/image/lvmaozi.jpg");
+		User  user6=new User("777","777","女",16,"小姐姐","三个七，","resource/image/think.jpg");
+		
 		
 		//给user用户封装一个好友列表信息
 		Map<String,HashSet<User>>  friends=new HashMap<>();
@@ -102,18 +103,18 @@ public class DBOperator {
 				f1s.add(user2);
 				f1s.add(user3);
 				
-				friends.put("大学室友", f1s);
+				friends.put("基友", f1s);
 				
 				HashSet<User>  f2s=new HashSet<>();
 				f2s.add(user4);
 				f2s.add(user5);
 				
-				friends.put("大学损友", f2s);
+				friends.put("闺蜜", f2s);
 				
 				HashSet<User>  f3s=new HashSet<>();
 				f3s.add(user6);
 				
-				friends.put("暗恋的对象", f3s);
+				friends.put("损友", f3s);
 				
 				user.setFriends(friends);
 				
@@ -138,6 +139,22 @@ public class DBOperator {
 			out.writeObject(user3);
 			out.flush();
 			out.close();
+			
+			out=new ObjectOutputStream(new FileOutputStream("databases/"+user4.getUsername()+".qq"));
+			out.writeObject(user4);
+			out.flush();
+			out.close();
+			
+			out=new ObjectOutputStream(new FileOutputStream("databases/"+user5.getUsername()+".qq"));
+			out.writeObject(user5);
+			out.flush();
+			out.close();
+			
+			out=new ObjectOutputStream(new FileOutputStream("databases/"+user6.getUsername()+".qq"));
+			out.writeObject(user6);
+			out.flush();
+			out.close();
+			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

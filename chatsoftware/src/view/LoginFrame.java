@@ -198,7 +198,7 @@ public class LoginFrame extends JFrame {
 		contentPane.add(lblNewLabel);
 		
 		
-		passwordField = new JPasswordField("222");
+		passwordField = new JPasswordField("111");
 		passwordField.setBounds(104, 179, 224, 23);
 		contentPane.add(passwordField);
 		

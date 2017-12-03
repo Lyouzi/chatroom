@@ -45,13 +45,14 @@ public class MainFrame extends JFrame {
     private Panel panel_2;
     private JScrollPane scrollPane;
 	private JTree tree;
+	private User user;
 
 	/**
 	 * Create the frame.
 	 * @param u 
 	 */
 	public MainFrame(User user) {
-		//this.user=user;
+		this.user=user;
 		setIconImage(Toolkit.getDefaultToolkit().createImage(("resource//image//logo.jpg")));
 		setResizable(false);
 		setTitle("主菜单");
@@ -89,7 +90,7 @@ public class MainFrame extends JFrame {
 		
 		panel = new Panel();
 		tabbedPane.addTab("好友", null, panel, null);
-panel.setLayout(new BorderLayout(0, 0));
+        panel.setLayout(new BorderLayout(0, 0));
 		
 		DefaultMutableTreeNode  root=new DefaultMutableTreeNode("root");//定义一个jtree根节点，所有的好友分组和好友都在这个根节点上往上放
 		

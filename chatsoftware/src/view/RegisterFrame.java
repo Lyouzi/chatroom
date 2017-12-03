@@ -155,18 +155,18 @@ public class RegisterFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {	
 				System.out.println("点击了提交按钮");
 				//1.先提取界面上用户输入的数据
-				String yonghuming=textField.getText().trim();
+				String zhanghao=textField.getText().trim();
 				String mima=passwordField.getText();
 				String sex=radioButton.isSelected()?"男":"女";
 				int age=Integer.parseInt(comboBox.getSelectedItem().toString());
 				
 				String nicheng=textField_1.getText().trim();
-				String touxiang="images/1.jpg";
+				String touxiang="";
 				String qianming=textArea.getText().toString();
 				//2.表单验证
 				
 				//3.封装成MessageBox
-				User  u=new User(yonghuming, mima, sex, age, nicheng, qianming, touxiang);
+				User  u=new User(zhanghao, mima, sex, age, nicheng, qianming, touxiang);
 				System.out.println(u);
 				MessageBox  registerMessage=new MessageBox();
 				registerMessage.setFrom(u);
