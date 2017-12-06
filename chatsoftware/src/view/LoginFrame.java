@@ -17,6 +17,7 @@ import view.LoginFrame;
 import view.MainFrame;
 
 import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -24,6 +25,7 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ObjectInputStream;
@@ -34,7 +36,7 @@ import javax.swing.JComboBox;
 
 public class LoginFrame extends JFrame {
 
-	
+	//类需要用到的对象用has-a关系在类中定义，在合适的位置实例化
 	private Socket  client;
 	private ObjectOutputStream  out;
 	private ObjectInputStream  in;
@@ -61,6 +63,15 @@ public class LoginFrame extends JFrame {
 				}
 			}
 		});
+		 /*JFrame.setDefaultLookAndFeelDecorated(true);   
+	        SwingUtilities.invokeLater(new Runnable() {   
+	            public void run() {   
+	                Window w = new LoginFrame();   
+	                w.setVisible(true);   
+	                //要使窗口透明，您可以使用 AWTUtilities.setWindowOpacity(Window, float) 方法   
+	               // com.sun.awt.AWTUtilities.setWindowOpacity(w, 0.9f);   
+	            }   
+	        }); */
 	}
 
 	/**

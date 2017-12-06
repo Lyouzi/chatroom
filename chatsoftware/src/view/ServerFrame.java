@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -44,15 +45,15 @@ public class ServerFrame extends JFrame {
     private Map<String, ObjectOutputStream>  allClient=new HashMap<>();//记录每个客户端登陆的账号和它对应使用的输出流
 	
 	//封装，根据实际情况，我们为了编程的便利性，我们将UI和后台控制Socket的代码整合到这个一个类中，
-
+    private ServerSocket  server;
 	private JPanel contentPane;
+	private JScrollPane scrollPane;
 	private JButton button;
 	private JButton button_1;
 	private JLabel label;
 	private JLabel label_1;
 	private JScrollPane scrollPane_1;
 	private JTextArea textArea_1;
-	private ServerSocket server;
 	private AllButtonListener listener;//内部监听对象
 	private JTable table;
 	private TableModel model;
@@ -98,16 +99,22 @@ public class ServerFrame extends JFrame {
 		label.setBounds(27, 10, 224, 23);
 		contentPane.add(label);
 		
+		model=new DefaultTableModel(tableTitle,0) ;
+		table = new JTable(model);
+		scrollPane = new JScrollPane(table);
+		scrollPane.setBounds(27, 30, 224, 252);
+		contentPane.add(scrollPane);
+		
 		/*lblNewLabel_1 = new JLabel("用户昵称");
 		lblNewLabel_1.setBorder(BorderFactory.createLineBorder(Color.gray));
 		lblNewLabel_1.setBounds(139, 43, 112, 23);
 		contentPane.add(lblNewLabel_1);*/
 		
-		table = new JTable();
+		/*table = new JTable();
 		table.setBorder(BorderFactory.createLineBorder(Color.gray));
 		table.setBounds(27, 33, 224, 249);
 		contentPane.add(table);
-		
+		*/
 		label_1 = new JLabel("所有用户发送的消息列表");
 		label_1.setBorder(BorderFactory.createLineBorder(Color.gray));
 		label_1.setBounds(278, 10, 279, 23);
@@ -116,7 +123,6 @@ public class ServerFrame extends JFrame {
 		scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(278, 33, 279, 249);
 		contentPane.add(scrollPane_1);
-		
 		textArea_1 = new JTextArea();
 		scrollPane_1.setViewportView(textArea_1);
 		
@@ -131,6 +137,7 @@ public class ServerFrame extends JFrame {
 		button_1.setBounds(340, 292, 116, 23);
 		contentPane.add(button_1);
 		
+		setLocationRelativeTo(null);
 		
 	}
 
@@ -227,6 +234,34 @@ public class ServerFrame extends JFrame {
 				}
 				
 				/**
+				 * 这是处理群消息的方法
+				 * @param m
+				 */
+				private void  processQunMessage(MessageBox  m) {
+				//1.先查出来，这个群有多少人
+					User u=DBOperator.login(m.getFrom().getUsername(), m.getFrom().getPassword());
+					Set<User>  thisGroupFriends=u.getMyGroups().get(m.getTo().getUsername());
+					for(User  uu:thisGroupFriends)
+					{
+						//当服务器接收到这个用户发送过来的文本消息的时候，我们就要遍历那个全局的集合，找到这个消息接收方的对应的输出流，把消息写给他
+						for (String username:allClient.keySet()) {
+							
+							if(username.equals(uu.getUsername())) {
+								m.setTime(new Date().toLocaleString());//在即将转发消息之前，将服务器上取到的时间设置到该消息对象里面，方便接收方显式正确的消息
+								try {
+									allClient.get(username).writeObject(m);
+									allClient.get(username).flush();
+									System.out.println("zhaodaole .这个群里面的一个好友，发送给他 ");
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+								break;
+							}
+						}
+					}
+				}
+				
+				/**
 				 * 处理普通转发的文本消息的方法
 				 * @param m
 				 */
@@ -246,7 +281,7 @@ public class ServerFrame extends JFrame {
 							break;
 						}
 					}
-					System.out.println("接收到了");
+					
 					
 					//服务器再给消息发送方回发一个消息，把事件传递回去，让发送方可以显式正确的事件
 					MessageBox  timeMessage=new MessageBox();
@@ -288,13 +323,12 @@ public class ServerFrame extends JFrame {
 					User loginedUser=DBOperator.login(m.getFrom().getUsername(), m.getFrom().getPassword());
 					
 					if(loginedUser!=null) {
+						allClient.put(loginedUser.getUsername(), out);//在登陆成功后将该登陆的号码和对应的通讯流存储到服务器的这个全局集合里
 					//如果登陆成功，需要更新服务器窗口上显式的用户列表信息
 					model=new DefaultTableModel(new Object[][] {{loginedUser.getUsername(),loginedUser.getNickname()}}, tableTitle);
-					
 					table.setModel(model);
-					
 					}
-					//当服务器根据传过来用户名和密码查询完数据库之后，无论登陆成功还失败都要给用户回一个消息(都要封装成MessageBox)
+					//当服务器根据传过来的用户名和密码查询完数据库之后，无论登陆成功还失败都要给用户回一个消息(都要封装成MessageBox)
 					MessageBox  loginResult=new MessageBox();
 					loginResult.setFrom(loginedUser);
 					loginResult.setType("loginResult");
@@ -305,5 +339,6 @@ public class ServerFrame extends JFrame {
 						e.printStackTrace();
 					}
 				}
+				
 	   }
    }

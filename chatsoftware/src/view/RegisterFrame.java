@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.Socket;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -32,6 +33,7 @@ import javax.swing.JButton;
 
 public class RegisterFrame extends JFrame {
 
+	private Socket  client;
 	private ObjectOutputStream  out;
 	private  ObjectInputStream  in;
 	private LoginFrame  login;//has-a  

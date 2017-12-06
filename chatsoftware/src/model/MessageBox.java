@@ -53,11 +53,11 @@ public class MessageBox implements Serializable{
 	
 	public MessageBox(User from, User to, String type, String content, String time) {
 		super();
-		this.setFrom(from);
-		this.setTo(to);
-		this.setType(type);
-		this.setContent(content);
-		this.setTime(time);
+		this.from = from;
+		this.to = to;
+		this.type = type;
+		this.content = content;
+		this.time = time;
 	}
 
 	public MessageBox() {

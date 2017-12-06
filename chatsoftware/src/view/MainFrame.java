@@ -25,6 +25,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import view.MainFrame;
+
 import view.MainFrame.MessageReciverThread;
 
 import model.MessageBox;
@@ -57,8 +59,9 @@ public class MainFrame extends JFrame {
     private Panel panel_1;
     private Panel panel_2;
     private JScrollPane scrollPane;
-	private JTree tree;
+
 	private User user;
+	private JTree friendTree,groupTree;
 
 	/**
 	 * Create the frame.
@@ -129,28 +132,65 @@ public class MainFrame extends JFrame {
 			root.add(group);
 		}
 		
-		tree = new JTree(root);
-		tree.addMouseListener(new MouseAdapter() {
+		friendTree = new JTree(root);
+		friendTree.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(e.getButton()==1&&e.getClickCount()==2) {
-					TreePath  path=tree.getSelectionPath();
+					TreePath  path=friendTree.getSelectionPath();
 					DefaultMutableTreeNode lastNode=(DefaultMutableTreeNode)path.getLastPathComponent();
 					if(lastNode.isLeaf()) {
 						//上面是解析用户双击之后判断是不是双击的某一个用户名上的这个Node
 						String username=lastNode.toString();
-						System.out.println(username);
-						ChatFrame   chat=new ChatFrame();
+						String num=username.substring(username.lastIndexOf("[")+1,username.length()-1);
+						//
+						User your=new User();
+						your.setUsername(num);
+						for(String firendNum:allFrames.keySet())
+						{
+							if(firendNum.equals(num))
+							{
+								allFrames.get(firendNum).setVisible(true);
+								return;
+							}
+						}
+						ChatFrame   chat=new ChatFrame(MainFrame.this.user,your,MainFrame.this.in,MainFrame.this.out);
 						chat.setVisible(true);
+						allFrames.put(num, chat);
 					}
 				}
 			}
 		});
-		tree.setRootVisible(false);
-		scrollPane= new JScrollPane(tree);
+		friendTree.setRootVisible(false);
+		scrollPane= new JScrollPane(friendTree);
 		panel.add(scrollPane, BorderLayout.CENTER);
 		
+		
+		/**
+		 * 解析该用户的所有群信息，并显式到jtree
+		 */
+		DefaultMutableTreeNode  root1=new DefaultMutableTreeNode("root");
+		
+		for(String groupName :user.getMyGroups().keySet())
+		{
+			DefaultMutableTreeNode  group=new DefaultMutableTreeNode(groupName);
+			root1.add(group);
+		}
+		groupTree=new JTree(root1);
+		groupTree.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getClickCount()==2&&e.getButton()==1) {
+					ChatFrame  c=new ChatFrame(MainFrame.this.user,groupTree.getSelectionPath().getLastPathComponent().toString(),MainFrame.this.in,MainFrame.this.out);
+					c.setVisible(true);
+				}
+			}
+		});
+		
+		groupTree.setRootVisible(false);
 		panel_1 = new Panel();
+		panel_1.setLayout(new BorderLayout());
+		panel_1.add(groupTree);
 		tabbedPane.addTab("群组", null, panel_1, null);
 		
 		panel_2 = new Panel();
